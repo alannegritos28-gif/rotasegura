@@ -1,0 +1,3 @@
+import {NextResponse} from 'next/server';import {getAdminClient} from '@/lib/supabaseServer';
+export const dynamic='force-dynamic';
+export async function GET(){const started=Date.now();const services:any={app:{status:'ok'}};const sb=getAdminClient();if(sb){const t=Date.now();const {error}=await sb.from('organizations').select('id',{head:true,count:'exact'}).limit(1);services.database={status:error?'error':'ok',latencyMs:Date.now()-t,message:error?.message}}else services.database={status:'not_configured'};return NextResponse.json({status:services.database.status==='error'?'degraded':'ok',version:'2.0.0',timestamp:new Date().toISOString(),latencyMs:Date.now()-started,services},{headers:{'cache-control':'no-store'}})}

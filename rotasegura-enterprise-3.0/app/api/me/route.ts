@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';import {getServerSupabase} from '@/lib/supabaseServer';
+export async function GET(){const sb=await getServerSupabase();if(!sb)return NextResponse.json({configured:false});const {data:{user}}=await sb.auth.getUser();if(!user)return NextResponse.json({error:'unauthorized'},{status:401});const {data:membership}=await sb.from('memberships').select('organization_id,role,organizations(name)').eq('user_id',user.id).limit(1).maybeSingle();return NextResponse.json({configured:true,user:{id:user.id,email:user.email},membership})}

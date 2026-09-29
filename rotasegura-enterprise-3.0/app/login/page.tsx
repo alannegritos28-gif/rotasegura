@@ -1,0 +1,17 @@
+'use client';
+import {useState} from 'react';import {LockKeyhole,Mail,Building2,Loader2,ArrowRight,ShieldCheck} from 'lucide-react';import {getBrowserSupabase} from '@/lib/supabaseBrowser';
+export default function Page(){const [mode,setMode]=useState<'login'|'signup'>('login');const [email,setEmail]=useState('');const [password,setPassword]=useState('');const [company,setCompany]=useState('');const [name,setName]=useState('');const [msg,setMsg]=useState('');const [busy,setBusy]=useState(false);const sb=getBrowserSupabase();
+ async function submit(){setMsg('');if(!sb){setMsg('Configure o Supabase antes de usar autenticação.');return}setBusy(true);try{if(mode==='login'){const {error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;const q=new URLSearchParams(location.search);location.href=q.get('next')||'/dashboard'}else{const {error}=await sb.auth.signUp({email,password,options:{data:{full_name:name,organization_name:company}}});if(error)throw error;setMsg('Conta criada. Confirme seu e-mail para continuar.');setMode('login')}}catch(e:any){setMsg(e.message||'Não foi possível concluir a autenticação.')}finally{setBusy(false)}}
+ return <div className="login-page">
+   <section className="login-hero"><div className="login-hero-shade"/><img className="login-hero-logo" src="/rota-segura-logo.png" alt="Rota Segura"/><div className="login-hero-copy"><span>INTELIGÊNCIA LOGÍSTICA</span><h1>Rotas mais seguras.<br/>Operações mais previsíveis.</h1><p>Planejamento, monitoramento e risco rodoviário em uma única plataforma.</p></div><div className="login-hero-footer"><span>RotaSegura Control</span><i/> <span>Driver</span><i/><span>Intelligence</span></div></section>
+   <section className="login-panel"><div className="login-card">
+     <div className="login-brand"><img src="/rota-segura-logo.png" alt="Rota Segura"/><h2>{mode==='login'?'Acesse sua conta':'Crie sua conta'}</h2><p>{mode==='login'?'Entre para continuar na plataforma.':'Configure seu ambiente corporativo.'}</p></div>
+     {mode==='signup'&&<><label>Nome<div className="input-icon"><ShieldCheck size={16}/><input value={name} onChange={e=>setName(e.target.value)} placeholder="Nome completo"/></div></label><label>Empresa<div className="input-icon"><Building2 size={16}/><input value={company} onChange={e=>setCompany(e.target.value)} placeholder="Nome da empresa"/></div></label></>}
+     <label>E-mail<div className="input-icon"><Mail size={16}/><input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="nome@empresa.com.br"/></div></label>
+     <label>Senha<div className="input-icon"><LockKeyhole size={16}/><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Sua senha"/></div></label>
+     <button onClick={submit} className="primary wide login-submit" disabled={busy||!email||password.length<8}>{busy?<><Loader2 className="spin" size={17}/> Entrando…</>:<>{mode==='login'?'Entrar':'Criar conta'}<ArrowRight size={17}/></>}</button>
+     {msg&&<div className="form-error" style={{marginTop:12}}>{msg}</div>}
+     <button className="auth-switch" onClick={()=>{setMode(mode==='login'?'signup':'login');setMsg('')}}>{mode==='login'?'Ainda não tem acesso? Criar conta':'Já tenho uma conta'}</button>
+     <div className="login-security"><ShieldCheck size={15}/> Ambiente corporativo protegido</div>
+   </div></section>
+ </div>}

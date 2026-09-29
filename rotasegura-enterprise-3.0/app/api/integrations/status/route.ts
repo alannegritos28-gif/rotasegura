@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';
+export async function GET(){return NextResponse.json({checkedAt:new Date().toISOString(),sources:[{id:'daer',name:'DAER WFS/WMS',configured:Boolean(process.env.DAER_WFS_URL),mode:'official'},{id:'dnit',name:'DNIT Dados Abertos',configured:Boolean(process.env.DNIT_DATA_URL),mode:'official'},{id:'weather',name:'Meteorologia',configured:true,mode:'operational'},{id:'database',name:'Supabase/PostGIS',configured:Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL&&process.env.SUPABASE_SERVICE_ROLE_KEY),mode:'internal'}]});}

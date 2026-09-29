@@ -1,0 +1,2 @@
+import type { MetadataRoute } from 'next';
+export default function manifest():MetadataRoute.Manifest{return {name:'RotaSegura Enterprise',short_name:'RotaSegura',description:'Inteligência logística, TMS, DMS e gestão de risco rodoviário.',start_url:'/dashboard',scope:'/',display:'standalone',background_color:'#061724',theme_color:'#061724',orientation:'any',categories:['business','navigation','productivity'],icons:[{src:'/icon-192.png',sizes:'192x192',type:'image/png',purpose:'any'},{src:'/icon-512.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]}}

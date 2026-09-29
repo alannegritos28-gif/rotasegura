@@ -1,0 +1,2 @@
+import {NextRequest,NextResponse} from 'next/server';import {getServerSupabase} from '@/lib/supabaseServer';
+export async function GET(req:NextRequest){const code=req.nextUrl.searchParams.get('code');const next=req.nextUrl.searchParams.get('next')||'/dashboard';const sb=await getServerSupabase();if(code&&sb)await sb.auth.exchangeCodeForSession(code);return NextResponse.redirect(new URL(next,req.url))}

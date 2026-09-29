@@ -1,0 +1,3 @@
+'use client';import Link from 'next/link';import {usePathname} from 'next/navigation';import {LayoutDashboard,Route,RadioTower,TriangleAlert,Settings} from 'lucide-react';
+const nav=[['/dashboard','Painel',LayoutDashboard],['/planejar','Rotas',Route],['/monitoramento','Monitor',RadioTower],['/alertas','Alertas',TriangleAlert],['/configuracoes','Mais',Settings]] as const;
+export default function MobileAdminNav(){const p=usePathname();return <nav className="mobile-admin-nav">{nav.map(([href,label,I])=><Link key={href} href={href} className={p===href?'active':''}><I size={19}/><span>{label}</span></Link>)}</nav>}

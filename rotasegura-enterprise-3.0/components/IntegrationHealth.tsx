@@ -1,0 +1,4 @@
+'use client';
+import {useEffect,useState} from 'react';
+type H={status?:string;services?:Record<string,{status:string;latencyMs?:number}>};
+export default function IntegrationHealth(){const [h,setH]=useState<H>({});useEffect(()=>{fetch('/api/health',{cache:'no-store'}).then(r=>r.json()).then(setH).catch(()=>{})},[]);return <div className="data-health"><div className="data-health-title"><strong>Saúde da plataforma</strong><span>{h.status||'verificando'}</span></div><div><span>Aplicação</span><em className="status ok">online</em></div><div><span>PostgreSQL/PostGIS</span><em className={'status '+(h.services?.database?.status==='ok'?'ok':'pending')}>{h.services?.database?.status||'verificando'}</em></div><div><span>Mapa vetorial</span><em className="status ok">ativo</em></div><div><span>Realtime</span><em className="status ok">preparado</em></div></div>}

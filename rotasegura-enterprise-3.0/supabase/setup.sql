@@ -1,0 +1,4 @@
+-- Execute os arquivos nesta ordem no Supabase SQL Editor:
+-- 1) supabase/001_initial.sql
+-- 2) supabase/migrations/002_professional.sql
+-- 3) supabase/migrations/003_enterprise_datahub.sql

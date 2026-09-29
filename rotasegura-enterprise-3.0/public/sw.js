@@ -1,0 +1,5 @@
+const CACHE='rotasegura-shell-v3';
+const CORE=['/offline','/manifest.webmanifest','/icon-192.png','/icon-512.png','/rota-segura-logo.png'];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin!==self.location.origin||u.pathname.startsWith('/api/')||u.pathname.startsWith('/dashboard')||u.pathname.startsWith('/planejar')||u.pathname.startsWith('/monitoramento')||u.pathname.startsWith('/frota')||u.pathname.startsWith('/motoristas')||u.pathname.startsWith('/ocorrencias')||u.pathname.startsWith('/alertas')||u.pathname.startsWith('/integracoes')||u.pathname.startsWith('/seguranca')||u.pathname.startsWith('/app-motorista'))return;e.respondWith(fetch(e.request).catch(()=>caches.match(e.request).then(r=>r||caches.match('/offline'))));});
