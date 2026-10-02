@@ -1,3 +1,36 @@
 'use client';
-import {useEffect,useState} from 'react';import ProfessionalMap from './ProfessionalMap';import {incidents as fallback,type Incident} from '@/lib/data';import {getBrowserSupabase} from '@/lib/supabaseBrowser';
-export default function LiveOperationsMap(){const [items,setItems]=useState<Incident[]>(fallback);useEffect(()=>{let alive=true;fetch('/api/incidents').then(r=>r.ok?r.json():null).then(d=>{if(alive&&d?.items?.length)setItems(d.items)}).catch(()=>{});const sb=getBrowserSupabase();if(!sb)return()=>{alive=false};const ch=sb.channel('rs-incidents').on('postgres_changes',{event:'*',schema:'public',table:'incidents'},()=>{fetch('/api/incidents').then(r=>r.ok?r.json():null).then(d=>{if(alive&&d?.items)setItems(d.items)}).catch(()=>{})}).subscribe();return()=>{alive=false;sb.removeChannel(ch)}},[]);return <ProfessionalMap incidents={items}/>}
+import {useEffect,useState} from 'react';
+import ControlTowerMap from './ControlTowerMap';
+import {incidents as fallback,type Incident} from '@/lib/data';
+import {getBrowserSupabase} from '@/lib/supabaseBrowser';
+
+export default function LiveOperationsMap(){
+  const [items,setItems]=useState<Incident[]>(fallback);
+
+  useEffect(()=>{
+    let alive=true;
+    fetch('/api/incidents')
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{if(alive&&d?.items?.length)setItems(d.items)})
+      .catch(()=>{});
+
+    const sb=getBrowserSupabase();
+    if(!sb)return()=>{alive=false};
+
+    const ch=sb.channel('rs-incidents')
+      .on('postgres_changes',{event:'*',schema:'public',table:'incidents'},()=>{
+        fetch('/api/incidents')
+          .then(r=>r.ok?r.json():null)
+          .then(d=>{if(alive&&d?.items)setItems(d.items)})
+          .catch(()=>{});
+      })
+      .subscribe();
+
+    return()=>{
+      alive=false;
+      sb.removeChannel(ch);
+    };
+  },[]);
+
+  return <ControlTowerMap incidents={items}/>;
+}
