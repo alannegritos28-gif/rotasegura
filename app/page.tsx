@@ -1,2 +1,5 @@
-import { redirect } from 'next/navigation';
-export default function Home(){ redirect('/dashboard'); }
+import RotaVisionPublic from '@/components/rotavision/RotaVisionPublic';
+
+export default function Home() {
+  return <RotaVisionPublic />;
+}
